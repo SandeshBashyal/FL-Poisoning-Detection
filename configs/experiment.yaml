@@ -1,0 +1,47 @@
+project:
+  name: "fl-backdoor-detection"
+  title: "Detecting Targeted Label-Flipping Attacks in Non-IID Federated Learning Using Layer-Wise Cosine Similarity Filtering"
+  random_seed: 42
+  device: "cuda" # will fallback to cpu if cuda unavailable
+
+dataset:
+  name: "MNIST"
+  num_classes: 10
+  num_clients: 10
+  dirichlet_alpha: 0.5
+  min_samples_per_client: 1000
+  normalization:
+    mean: [0.1307]
+    std: [0.3081]
+  data_dir: "./data"
+
+federated_learning:
+  num_rounds: 15
+  local_epochs: 1
+  batch_size: 64
+  client_fraction: 1.0
+  optimizer:
+    name: "SGD"
+    lr: 0.01
+    momentum: 0.9
+    weight_decay: 0.0001
+
+attack:
+  name: "targeted_label_flipping"
+  malicious_client_ids: [2, 6]
+  source_label: 1
+  target_label: 7
+  flip_ratio: 1.0
+
+defense:
+  name: "layerwise_cosine_similarity"
+  target_layer: "fc2"
+  multiplier: 1.5
+  min_accepted_clients: 3
+  eps: 1e-12
+
+paths:
+  results_dir: "./results"
+  figures_dir: "./results/figures"
+  metrics_dir: "./results/metrics"
+  checkpoints_dir: "./results/checkpoints"
